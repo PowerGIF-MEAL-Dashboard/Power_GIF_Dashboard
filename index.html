@@ -605,6 +605,30 @@ tr:hover .row-acts,
   .excel-banner-close:hover{opacity:1}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+/* ══ VIEW-ONLY MODE ══ */
+html[data-mode="view"] .btn-add,
+html[data-mode="view"] .btn-add-ghost,
+html[data-mode="view"] .kpi-add-card,
+html[data-mode="view"] .clear-link,
+html[data-mode="view"] .btn-excel,
+html[data-mode="view"] .kpi-actions,
+html[data-mode="view"] .row-acts{display:none !important}
+html[data-mode="view"] .empty span[onclick]{pointer-events:none;text-decoration:none;color:inherit;cursor:default}
+html[data-mode="view"] .period-chip{pointer-events:none;cursor:default}
+html[data-mode="view"] [contenteditable]{cursor:default}
+html[data-mode="view"] .view-badge{display:inline-flex}
+.view-badge{display:none;align-items:center;gap:5px;font-size:11px;font-weight:500;
+  letter-spacing:.02em;padding:4px 10px;border-radius:99px;
+  background:rgba(0,0,0,0.06);color:var(--ink3);white-space:nowrap}
+</style>
+<script>
+(function(){
+  var edit = new URLSearchParams(location.search).get('edit') === '1';
+  document.documentElement.setAttribute('data-mode', edit ? 'edit' : 'view');
+})();
+</script>
 </head>
 <body>
 
@@ -652,6 +676,7 @@ tr:hover .row-acts,
       <button class="th-btn"      onclick="setTheme('grey',this)"  title="Grey">◑</button>
       <button class="th-btn"      onclick="setTheme('dark',this)"  title="Dark">🌙</button>
     </div>
+    <span class="view-badge"><i class="ti ti-lock"></i> View only</span>
     <span class="period-chip" id="period-chip" onclick="openPeriod()" title="Click to edit period">
       FY 2025/26 · Q2
     </span>
@@ -881,7 +906,7 @@ tr:hover .row-acts,
 
   <!-- Footer -->
   <div style="text-align:center;font-size:11px;color:var(--ink4);padding:1.5rem 0 0.5rem;border-top:1px solid var(--border);margin-top:0.5rem">
-    POWER-GIF · Powering Nepal's Green Industrial Future · MEAL Dashboard · Data auto-saved in this browser <span class="clear-link" onclick="clearAllData()" title="Wipe all saved data and start fresh">Reset dashboard</span>
+    POWER-GIF · Powering Nepal's Green Industrial Future · MEAL Dashboard · CRT/N <span id="data-stamp"></span> <span class="clear-link" onclick="clearAllData()" title="Wipe all saved data and start fresh">Reset dashboard</span>
   </div>
 
 </main>
@@ -1515,9 +1540,15 @@ function handleExcelUpload(evt){
   evt.target.value = '';
 
   var reader = new FileReader();
-  reader.onload = function(e){
+  reader.onload = function(e){ applyWorkbook(e.target.result, false); };
+  reader.readAsArrayBuffer(file);
+}
+
+/* Shared parser: used by the manual upload AND by the automatic
+   fetch of data.xlsx from the repo. */
+function applyWorkbook(buffer, isAuto){
     try{
-      var data  = new Uint8Array(e.target.result);
+      var data  = new Uint8Array(buffer);
       var wb    = XLSX.read(data, {type:'array'});
       var counts = {kpis:0, outcomes:0, activities:0, risks:0};
 
@@ -1631,16 +1662,71 @@ function handleExcelUpload(evt){
         counts.activities + ' activit' + (counts.activities !== 1 ? 'ies' : 'y') + ', ' +
         counts.risks + ' risk' + (counts.risks !== 1 ? 's' : '') +
         ' — data saved automatically.';
-      document.getElementById('excel-banner-msg').textContent = msg;
-      document.getElementById('excel-banner').classList.add('show');
+      if(!isAuto){
+        document.getElementById('excel-banner-msg').textContent = msg;
+        document.getElementById('excel-banner').classList.add('show');
+      }
+      return true;
 
     }catch(err){
-      alert('Could not read Excel file. Please make sure it is the PowerGIF_Data.xlsx template.\nError: ' + err.message);
+      if(isAuto){ console.warn('Auto-load failed: ' + err.message); return false; }
+      alert('Could not read the Excel file. Error: ' + err.message);
+      return false;
     }
-  };
-  reader.readAsArrayBuffer(file);
 }
 
+
+/* ─── VIEW-ONLY GUARD ─────────────────────────────────────
+   Editing is enabled only when the URL ends with ?edit=1    */
+(function(){
+  if(document.documentElement.getAttribute('data-mode') !== 'view') return;
+  ['openKpi','openOutcome','openActivity','openRisk','openPeriod',
+   'clearAllData','deleteKpi','deleteOutcome','deleteActivity','deleteRisk']
+  .forEach(function(fn){
+    if(typeof window[fn] === 'function'){ window[fn] = function(){ return false; }; }
+  });
+  function lockFields(){
+    document.querySelectorAll('[contenteditable]').forEach(function(el){
+      el.setAttribute('contenteditable','false');
+    });
+  }
+  lockFields();
+  document.addEventListener('DOMContentLoaded', lockFields);
+  setTimeout(lockFields, 300);
+})();
+
+/* ─── AUTO-LOAD data.xlsx FROM THE REPO ───────────────────
+   The spreadsheet committed next to this file is the single
+   source of truth. Replace it and commit to update everyone. */
+(function(){
+  function stamp(txt){
+    var el = document.getElementById('data-stamp');
+    if(el) el.textContent = '\u00b7 ' + txt;
+  }
+  function boot(){
+    fetch('data.xlsx?v=' + Date.now(), {cache:'no-store'})
+      .then(function(r){
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        var lm = r.headers.get('Last-Modified');
+        boot._when = lm ? new Date(lm) : null;
+        return r.arrayBuffer();
+      })
+      .then(function(buf){
+        if(applyWorkbook(buf, true)){
+          stamp(boot._when
+            ? 'Data as of ' + boot._when.toLocaleDateString('en-GB',
+                {day:'numeric', month:'short', year:'numeric'})
+            : 'Data loaded');
+        }
+      })
+      .catch(function(err){
+        console.warn('data.xlsx not loaded: ' + err.message);
+        stamp('No data file found');
+      });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
 </script>
 
 <!-- SAVE TOAST -->
