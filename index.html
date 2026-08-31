@@ -619,6 +619,19 @@ html[data-mode="view"] .empty span[onclick]{pointer-events:none;text-decoration:
 html[data-mode="view"] .period-chip{pointer-events:none;cursor:default}
 html[data-mode="view"] [contenteditable]{cursor:default}
 html[data-mode="view"] .view-badge{display:inline-flex}
+.view-welcome{display:none}
+html[data-mode="view"] .view-welcome{
+  display:block;background:var(--card);border:1px solid var(--border);
+  border-left:3px solid var(--accent);border-radius:var(--r);
+  padding:1.15rem 1.35rem;margin:0 0 1.7rem;box-shadow:var(--sh)}
+.vw-title{font-family:var(--display);font-size:15px;font-weight:700;
+  color:var(--ink);margin-bottom:.5rem;letter-spacing:.01em}
+.vw-body{font-family:var(--body);font-size:13px;line-height:1.68;
+  color:var(--ink2);max-width:82ch}
+.vw-meta{display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:.95rem;padding-top:.85rem;
+  border-top:1px solid var(--border);font-family:var(--body);
+  font-size:11.5px;color:var(--ink3)}
+.vw-meta span{display:inline-flex;align-items:center;gap:5px}
 .view-badge{display:none;align-items:center;gap:5px;font-size:11px;font-weight:500;
   letter-spacing:.02em;padding:4px 10px;border-radius:99px;
   background:rgba(0,0,0,0.06);color:var(--ink3);white-space:nowrap}
@@ -708,6 +721,22 @@ html[data-mode="view"] .view-badge{display:inline-flex}
         <div class="pg-title">Monitoring, Evaluation,<br>Accountability &amp; Learning</div>
         <div class="pg-sub">Powering Nepal's Green Industrial Future · Birgunj-Simara Corridor · Nepal</div>
       </div>
+    </div>
+  </div>
+
+  <!-- ── VIEWER WELCOME (view mode only) ── -->
+  <div class="view-welcome">
+    <div class="vw-title">Welcome to the Power-GIF MEAL Dashboard</div>
+    <div class="vw-body">
+      This dashboard reports current progress for <strong>Powering Nepal&rsquo;s Green Industrial
+      Future</strong>, the CRT/N-led consortium programme in the Birgunj&ndash;Simara Industrial
+      Corridor. It brings together key performance indicators, outcome-level tracking, activity
+      progress, and the risk and accountability register for the reporting period shown above.
+    </div>
+    <div class="vw-meta">
+      <span><i class="ti ti-eye"></i> Read-only view</span>
+      <span><i class="ti ti-refresh"></i> Refreshed each reporting period</span>
+      <span><i class="ti ti-printer"></i> Use Print / Export to save a PDF copy</span>
     </div>
   </div>
 
@@ -1691,8 +1720,50 @@ function applyWorkbook(buffer, isAuto){
     });
   }
   lockFields();
-  document.addEventListener('DOMContentLoaded', lockFields);
-  setTimeout(lockFields, 300);
+
+  /* ── Viewer-facing copy (replaces editor instructions) ── */
+  function viewerCopy(){
+    var hint = document.querySelector('.sec-hint');
+    if(hint) hint.textContent = 'Headline indicators for the current reporting period';
+
+    document.querySelectorAll('.sec-hsub').forEach(function(el){
+      if(/type directly/i.test(el.textContent)){
+        el.textContent = 'Reflections recorded by the programme team this period';
+      }
+    });
+
+    var empties = {
+      'outcomes-empty':   'Outcome indicator data has not been published for this period.',
+      'activities-empty': 'Activity progress has not been published for this period.',
+      'risks-empty':      'No risks have been logged for this period.'
+    };
+    Object.keys(empties).forEach(function(id){
+      var el = document.getElementById(id);
+      if(el){
+        var p = el.querySelector('p');
+        if(p) p.textContent = empties[id];
+      }
+    });
+
+    var blanks = {
+      'learn-1': 'No key learning recorded for this period.',
+      'learn-2': 'No action items recorded for this period.',
+      'learn-3': 'No data quality notes recorded for this period.'
+    };
+    Object.keys(blanks).forEach(function(id){
+      var el = document.getElementById(id);
+      if(el){
+        el.setAttribute('data-placeholder', blanks[id]);
+        if(!el.textContent.trim()) el.textContent = '';
+      }
+    });
+
+    var chip = document.getElementById('period-chip');
+    if(chip) chip.setAttribute('title', 'Current reporting period');
+  }
+  viewerCopy();
+  document.addEventListener('DOMContentLoaded', function(){ lockFields(); viewerCopy(); });
+  setTimeout(function(){ lockFields(); viewerCopy(); }, 300);
 })();
 
 /* ─── AUTO-LOAD data.xlsx FROM THE REPO ───────────────────
