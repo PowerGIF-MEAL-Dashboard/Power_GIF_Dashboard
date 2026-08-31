@@ -5,7 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Power-GIF MEAL Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+/* ══ TABLER ICONS — subset (18 glyphs) embedded, no CDN needed ══
+   Tabler Icons 2.44.0, MIT — https://tabler.io                  */
+@font-face{font-family:"tabler-icons";font-style:normal;font-weight:400;
+  src:url(data:font/woff2;base64,d09GMgABAAAAAA9AAAsAAAAAGQgAAA70AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHCoGYACBNAqrEKELATYCJAMqCygABCAFgQoHIBsWE1GUkFYBwI/FGId993GRCR3QNu95HlqpVIxGwUCWihImI81i2tiLdJVu7boal20MDOpEpfWTW5bkQAGDJQBDAegbkP3aGwuSOFCIHSoBBHacOO/ar264R9XSebQ++TbukB16+4h59VDodEoRl6gSCZVGSITUxUIvPEazwVUMCxv8eD1AAIAC/hAIOJ0h1Q5u1UVNtSAAPABAVxcgs+PRx8hUwACwebj9ADDRHgx5DOEIbmAcYCjAy5kd+lI47MLe/0JHds2HbLdaKAUABAjzRYiDKOOsEgJGPCwOZ7LnOPAugsviynX1dVW6OlxPXZ878Z3UTrdOdqd3Z1xnWmfl+19l7qML43wbIX+5W7mruQu587k1XH8un0vgAuc/5zfnLeciZx9nFVMICBCJDdAfxFgR3exJReYzGP7yIQEOUOJmyAoRhkOGwaQEwPhsLl3CFlOZDFaQ9DkmWihdyPUScIL9vFiUCI7UXSKmkfrY6aHMOI3dS4mXcPkaXz5GV06xonSNfWtpTS/kGO3cttnpLLylA9c6XghxcFwT8f2+7OyVFZ8AzoFu4cyNaxEBbU/dUM5ka/GKV4wJ5HzrvR52NcmzhP9Dss1EdTxD3Z+NrPcvRuV/BypRScW/VCAHs78xI9lh+7zrV8McaBbDgDGGkCMEhUJAw9ZZplCLywa0699612+GLQswnHEigtr2druhuLzGgVVFjrgljjh1aMs0bEiXcGCxKtvemXV+2u1J14c9bY25qOWbk6shBiycSdxBztR6fwFtmku1DVE0n0y+0ex3cgYnnCiNtFRlVEZL/Ysz669idLt0OfGtoQw7DgqKpSO2KlXXVfxCfqjvEIIG2wEnXHHvUoi+lBW3oXVsKVNFiAkqZhpNVg4M+kCbza5FRE6VHZVtRa4/RTc7+8v5wrAeFS9HadefdrR/KbQ76z4vkr6oLa35ypv6QdVeTD9o2OAds2MwNl1L1QUV0zSEczLjLvHjUjXNRlFKZS7Y1ObEmzYpDcVXavtYippu1ZynvJdVM4Qnk4kqzhSuxmU6nawR/3opIlKpdEP1iteGskQiVafikAKvTni6pKXfHQGzhGMWaq5OfFKj3h6Zi56f93na+47uTL5BpxleTWSscC15dsrdKS8XFahUnrcfUe7JxbP19f7FzqTbE64ma+Fs6MS27bZZPnN2mN9Qvfqh051lrxc8bQ3i2UG6T/xkrR8HPdc+dGY87urQa6neW6bhqVJVL0+rTDLtXcWp9ebkG30hU5llK9Cmgm7IxZCjIVbFDOgW4QT0r3M3qS4H7izfAVay9jTdGOBdigWbyoBrOIUrvtLNjbuqcpCUhhP/m0EEqjK9732Wx3K7NePuIB7KD2daE+ND3rlbQ8sJ/HGNKrdrQOmYn9YeYnKMqZemObgQMcySx+Cl6xYhZaHSwiQmmaZTkyWZORLUyzBsKqCgutTeVTqK4pOrH5shSXEd8O1yOLBCFob5xB2EgJXBmTfj9aY1DWK3+oschI8hWEof9YcCLsPaaintxaUqpaKo6syl9zrDDINuUAhqOBq78nTOCcvyo166MUn+TPxhN/vxLACKlKpp2FQUqH53R2chwNsRzSSFMZGzzSU8DCwC1REjP4vZtZarR4uR9sp3YpbHMJ7ASdo/F1iYUcnhUQyoR1xu8GThyHRwMazDQhgG2RZCs4CGYE91cDOiefgJDFcTN8a/QM7KV22OwYNj1lDmxK5Nfbf2k+FbfmpIaYAXP/9q/PmyJJcjffKxZSqS+OGL+smB+TNX6hVdYbQE7UgugpyJz5a2V1L8pqldQUgfUKQCvosllAvPsNoguYYTrraGLKH9t1JxiV8Lk2ZiunPYwhkU+gvnP4xnP9GRbidiY8Q5V4pLxYS26t3XgQK3W7p+knBSl7hulSRHxhCzw6X8pI9tVMrRNgJm5YCKCPRM4TUBaOV+ZScyWRBsY1UhUpO6xlOBAcv6b37a1GuiJvxGRHrSU8ZIQMWwIKEZdRmTD42O7TGbvpoxhB1+VrcoXqWfeHJWzHyp2/FaGjilnaYgtOXQQIsOlsceI3OjyzkXlIE1rImgQnWCaoEifxVJMYiHRwFRvUaFnHf9ohfICGxgTLPGAkqvPeovunQpqV76vC7UTRWI2C7QTX4LYsetghxOouhd0BGnuro6HbNCbS2X6bRutXFuQ4WlLWUNH/e+D22BpqxxvXS9ukCVm6sqUNdXZyltodEmldHjgChbUjh9WqEkW7zf06gyR8ttyizbTHKhv93PNLU0g5hDXGNXmENTkZ0hqUpbltzkb0WN6Ghj5rDisJo7Z6oRXzEbNBmoVhmrQzP0An9RFOdt3RIt/v1UYiORAsIS5Efhk9eN0o+qzD4KvwekhAELxiqZm3oszSUwTnNMisOT1BG9s/2MYd4d7ux53kZ5t2R5nFqxNCrWpEMzQMMW+yK+a0YSacSRezg5btLz7+c/lun2Y5gb5ydIUYIqVqPDwjBBwmb55gSBaznEWlYGl/qmq0hjtbJob9ynSLrPT3IiAOuWeM89DnVR16+3Cyma2DdvRt5quXHHYezYSDLUyE3ihoExIk8sO7B3jNLj7GxM7BEzoFHbjZknpbsmedfle+RfvLqtJbLvwYm8+L3p89qm6Ec3bpqhxBcOaxugDPvcRJVTm4ZjYZjuy9Mt3rzfo+qxcGF/9qWAhuHXzy/xj7i7Yy2LOuNkQbQZRi5tGbHStn69Oic7zh11rrg/N8JsGrvujTdnYIxlYUKl/kHzsAxCIrr2H7PUbzh+/wm9T2KOPuMWKeHxR/+1/g83/bDZ7PCTUV+gzlWpctUF9XZNx5pzFkm6ZymhlGJRpUYoTAojd4fEJjLXDzX6mP1cTkq+n83XNKVvOimXlBEyKUGX4lZEy07akKwydS/FWXHtiWFxSu2Zn0X/HLk561vvtB8ZdEpOzOzw3mcjq8PvGwx6fURCFAFRvFoLhan07KjNvXS9DeneeX5VxEZqls4em3aCVEGuic3qZU2XGwMyMRNq4CfymwtTRl7NL4FpxuGl+CkS5FrGCo9kmXlSTSbFTl4UExXfTT8TbfdKHsI+t3//OXb7lTBhuB25q8KFYVfa/W2fSv+HOnbUKXi6VgqbCetqDQExhh4t8DOgR8+AH6EJNktqgThdkEardy+y/LaVRc2YXrFDtFBVE9C7j+Lr1KHCy/2FzwnXhf2fdt/8sWlLIqKRJfj2TN7fiVkflTQOYQ5TGnw+dA8I0puc50VZ0TWVhqlVyblYxOJ4Lt6GLFf4noeQ5mZDtm3G/xqr9UQshQQJS5/PUY1vwviveYSsl7t+t2+jKwNWn2vBeHCXTiEKEGRFJRsplRvQjT1+2IAYvAH4VLdQw09DqBuFOJg4KutmRRXgt+BCcMMgT0LC/JCEpogRm5fb58jRkXjj9TwPP0fkdeeSooz6mklwYestGbNDb8VF0Bgxy2OAHoGz6juY7L2tS82JAMsE0aP2+fu+Ly1z/1db7rWymK4pnqHgy9syHj58/HhkcQdrnMfE+i1lc1W2ueerZm3cVFm1adOGjXYduK4W7VMhvgSSGO7cAfEwQjxi1Xd4d+itSDxhmPgOwB0xieCL+NnXeK+x+3H/oXPK9rrRgPcsACEmQkyTWdNPle7ZSycVt6vD2oLZ7im9cHQ+jPRTJ4lEPE7wpt5c84ScCLO9p+NesC9PJOTFLXUdLgI+Hde7gBCZ/bn6VOGyJzxPnVrYa8vgAOPSvlGDRyeOGeK4ORJGr/nV9iAQo5kgu9rxM1LoqRnc+lC3hLLEO2fVwyA2Txj101EN2dCHjgW8b4vzxwcuXvF8194pjpNuNx1D9g0Zu2PUWNhwjTna3u7JoENHorlcXCI8ozYkp5jZDTmPDtRvjOJz5K0PPA1vz05n6URJkggNk8UyS4ddfpPDQSi8P81O8xrzlnFpKZBtonOEjrWkpGv9DybT7Uq9In6qzYplEOwys3eOTgd0z3b7aJ8ORxCHboLsHP24LbJNMmfzH/nvZqcsyOx3wb8tqJYZnfT4oqmWqpXw8vYDRSoInsm6c3D1EjgQaPJJoBsXxoauqVIN3lZkvrqi0Sh+drZ4eem/b/Oi04EylRmdJkeSqHOmRBtucki2qkhbsDSQmUiUtIzT6oUVo0dnDImIJzW5kfitslrP8jnzy338yvZYt8TZuhxa3fmxza9eBSnI+x+m6WQzniDmle8nT35fiSEer/eCcESAJsf6SfuzEXqwfBWLgaYxrGoQsHz2oN0nzC4sLSQfy/VGfXazBQ0rEzS0xRASKO0eGZhqXW7Vr6Sx7tJXaqRCH+b4pUp+iEC5dDwSKZRqrm2z7tKQ1/1rSnqyfNHheRI+IYo18eVBEx6eIydlW3S0jy8Ri8LNXwzzGRtvnAI/1n4Rh6GYPrPf4UN00/0yDBgqPzXwCGrWlnqfPnXo0JiWEgsacd8X5Ub37XdoRmzRylVcVLJr0NEQpc1jDh0+DGyXvwQ0b9z2nmOTUy7M9YYxI9Gp1GVzyhz7DpHkp6qPtK/s8k6f27J6eb1DdrJ970Gls/lPyJ9mp/Lg+KDNznjo7mhJwNt97AgZBcx23n+QHOzo1FX/vdOs1ywzORW8vvm3/HdzPR8Hi2mc+R4Ancj++csmx5yUibpDvHNz0PhC3Lm9QJseUGh2tk0+cxKlzdyMah+T6tRMr5DGRp5Apv36RatcULvYvEwjOq0lhCI0fCXxtSq17WEgSlt88eKSwwAXG2ERHQ1836YszDk9yHUC9EXQeLFwBaEJHvhGHtry5HrRnrQHMIWK7zP5qr+YRPRI0qaFE2mXh6uHt30nw9Cux/8g8f0wE40oQI+haj/XDlTu6sRtVBehYfYK1wJUEeY6B7feqEPD0RiP7IRMK+41WOFuhOl6PwsNdHai1Ip3c9AQMHcyaR7ErlbjXKAeOzYBhJgjzQ/fd63Avdc3EhVNt98gvwWH7Uld60Ks3GrpvyRkiEX/MSNBDGLrjaA5kLAuExK/io2kANenAxQE6PMPEI4nc0CBxh2AAzcQ9EbDeuMhAAMe+EsE2GoTFEExVEMZNEAoVEAJ1EEtNIIVyqAvNG+wSEkHHtBI11FkEA5hoAQUSMwUAA==) format("woff2");font-display:block}
+.ti{font-family:"tabler-icons"!important;speak:none;font-style:normal;
+  font-weight:normal;font-variant:normal;text-transform:none;line-height:1;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.ti-alert-circle:before{content:"\ea05"}
+.ti-alert-triangle:before{content:"\ea06"}
+.ti-bulb:before{content:"\ea51"}
+.ti-chart-line:before{content:"\ea5c"}
+.ti-circle-check:before{content:"\ea67"}
+.ti-circle-x:before{content:"\ea6a"}
+.ti-eye:before{content:"\ea9a"}
+.ti-list-check:before{content:"\eb6a"}
+.ti-lock:before{content:"\eae2"}
+.ti-minus:before{content:"\eaf2"}
+.ti-pencil:before{content:"\eb04"}
+.ti-plus:before{content:"\eb0b"}
+.ti-printer:before{content:"\eb0e"}
+.ti-refresh:before{content:"\eb13"}
+.ti-shield-check:before{content:"\eb22"}
+.ti-table-import:before{content:"\eef9"}
+.ti-trash:before{content:"\eb41"}
+.ti-x:before{content:"\eb55"}
+</style>
 <style>
 /* ── RESET ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -605,6 +631,46 @@ tr:hover .row-acts,
   .excel-banner-close:hover{opacity:1}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+/* ══ VIEW-ONLY MODE ══ */
+html[data-mode="view"] .btn-add,
+html[data-mode="view"] .btn-add-ghost,
+html[data-mode="view"] .kpi-add-card,
+html[data-mode="view"] .clear-link,
+html[data-mode="view"] .btn-excel,
+html[data-mode="view"] .kpi-actions,
+html[data-mode="view"] .row-acts{display:none !important}
+html[data-mode="view"] .empty span[onclick]{pointer-events:none;text-decoration:none;color:inherit;cursor:default}
+html[data-mode="view"] .period-chip{pointer-events:none;cursor:default}
+html[data-mode="view"] [contenteditable]{cursor:default}
+html[data-mode="view"] .view-badge{display:inline-flex}
+.view-welcome{display:none}
+html[data-mode="view"] .view-welcome{
+  display:block;background:var(--card);border:1px solid var(--border);
+  border-left:3px solid var(--accent);border-radius:var(--r);
+  padding:1.15rem 1.35rem;margin:0 0 1.7rem;box-shadow:var(--sh)}
+.nb{white-space:nowrap}
+.vw-title{font-family:var(--display);font-weight:700;color:var(--ink);
+  margin-bottom:.5rem;letter-spacing:.01em;line-height:1.35;
+  font-size:clamp(13.5px,2.4vw,16px);text-wrap:balance}
+@media(min-width:600px){.vw-title{white-space:nowrap}}
+.vw-body{font-family:var(--body);font-size:13px;line-height:1.68;
+  color:var(--ink2);max-width:82ch}
+.vw-meta{display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:.95rem;padding-top:.85rem;
+  border-top:1px solid var(--border);font-family:var(--body);
+  font-size:11.5px;color:var(--ink3)}
+.vw-meta span{display:inline-flex;align-items:center;gap:5px}
+.view-badge{display:none;align-items:center;gap:5px;font-size:11px;font-weight:500;
+  letter-spacing:.02em;padding:4px 10px;border-radius:99px;
+  background:rgba(0,0,0,0.06);color:var(--ink3);white-space:nowrap}
+</style>
+<script>
+(function(){
+  var edit = new URLSearchParams(location.search).get('edit') === '1';
+  document.documentElement.setAttribute('data-mode', edit ? 'edit' : 'view');
+})();
+</script>
 </head>
 <body>
 
@@ -652,6 +718,7 @@ tr:hover .row-acts,
       <button class="th-btn"      onclick="setTheme('grey',this)"  title="Grey">◑</button>
       <button class="th-btn"      onclick="setTheme('dark',this)"  title="Dark">🌙</button>
     </div>
+    <span class="view-badge"><i class="ti ti-lock"></i> View only</span>
     <span class="period-chip" id="period-chip" onclick="openPeriod()" title="Click to edit period">
       FY 2025/26 · Q2
     </span>
@@ -683,6 +750,21 @@ tr:hover .row-acts,
         <div class="pg-title">Monitoring, Evaluation,<br>Accountability &amp; Learning</div>
         <div class="pg-sub">Powering Nepal's Green Industrial Future · Birgunj-Simara Corridor · Nepal</div>
       </div>
+    </div>
+  </div>
+
+  <!-- ── VIEWER WELCOME (view mode only) ── -->
+  <div class="view-welcome">
+    <div class="vw-title">Welcome to the <span class="nb">Power-GIF</span> <span class="nb">MEAL Dashboard</span></div>
+    <div class="vw-body">
+      This dashboard reports current progress for <strong>Powering Nepal&rsquo;s Green Industrial
+      Future</strong>, the CRT/N-led consortium programme in the <span class="nb">Birgunj&ndash;Simara</span> Industrial Corridor. It brings together key performance indicators, outcome-level tracking, activity
+      progress, and the risk and accountability register for the reporting period shown above.
+    </div>
+    <div class="vw-meta">
+      <span><i class="ti ti-eye"></i> Read-only view</span>
+      <span><i class="ti ti-refresh"></i> Refreshed each reporting period</span>
+      <span><i class="ti ti-printer"></i> Use Print / Export to save a PDF copy</span>
     </div>
   </div>
 
@@ -881,7 +963,7 @@ tr:hover .row-acts,
 
   <!-- Footer -->
   <div style="text-align:center;font-size:11px;color:var(--ink4);padding:1.5rem 0 0.5rem;border-top:1px solid var(--border);margin-top:0.5rem">
-    POWER-GIF · Powering Nepal's Green Industrial Future · MEAL Dashboard · Data auto-saved in this browser <span class="clear-link" onclick="clearAllData()" title="Wipe all saved data and start fresh">Reset dashboard</span>
+    POWER-GIF · Powering Nepal's Green Industrial Future · MEAL Dashboard · CRT/N <span id="data-stamp"></span> <span class="clear-link" onclick="clearAllData()" title="Wipe all saved data and start fresh">Reset dashboard</span>
   </div>
 
 </main>
@@ -1515,9 +1597,15 @@ function handleExcelUpload(evt){
   evt.target.value = '';
 
   var reader = new FileReader();
-  reader.onload = function(e){
+  reader.onload = function(e){ applyWorkbook(e.target.result, false); };
+  reader.readAsArrayBuffer(file);
+}
+
+/* Shared parser: used by the manual upload AND by the automatic
+   fetch of data.xlsx from the repo. */
+function applyWorkbook(buffer, isAuto){
     try{
-      var data  = new Uint8Array(e.target.result);
+      var data  = new Uint8Array(buffer);
       var wb    = XLSX.read(data, {type:'array'});
       var counts = {kpis:0, outcomes:0, activities:0, risks:0};
 
@@ -1631,16 +1719,158 @@ function handleExcelUpload(evt){
         counts.activities + ' activit' + (counts.activities !== 1 ? 'ies' : 'y') + ', ' +
         counts.risks + ' risk' + (counts.risks !== 1 ? 's' : '') +
         ' — data saved automatically.';
-      document.getElementById('excel-banner-msg').textContent = msg;
-      document.getElementById('excel-banner').classList.add('show');
+      if(!isAuto){
+        document.getElementById('excel-banner-msg').textContent = msg;
+        document.getElementById('excel-banner').classList.add('show');
+      }
+      return true;
 
     }catch(err){
-      alert('Could not read Excel file. Please make sure it is the PowerGIF_Data.xlsx template.\nError: ' + err.message);
+      if(isAuto){ console.warn('Auto-load failed: ' + err.message); return false; }
+      alert('Could not read the Excel file. Error: ' + err.message);
+      return false;
     }
-  };
-  reader.readAsArrayBuffer(file);
 }
 
+
+/* ─── VIEW-ONLY GUARD ─────────────────────────────────────
+   Editing is enabled only when the URL ends with ?edit=1    */
+(function(){
+  if(document.documentElement.getAttribute('data-mode') !== 'view') return;
+  ['openKpi','openOutcome','openActivity','openRisk','openPeriod',
+   'clearAllData','deleteKpi','deleteOutcome','deleteActivity','deleteRisk']
+  .forEach(function(fn){
+    if(typeof window[fn] === 'function'){ window[fn] = function(){ return false; }; }
+  });
+  function lockFields(){
+    document.querySelectorAll('[contenteditable]').forEach(function(el){
+      el.setAttribute('contenteditable','false');
+    });
+  }
+  lockFields();
+
+  /* ── Viewer-facing copy (replaces editor instructions) ── */
+  function viewerCopy(){
+    var hint = document.querySelector('.sec-hint');
+    if(hint) hint.textContent = 'Headline indicators for the current reporting period';
+
+    document.querySelectorAll('.sec-hsub').forEach(function(el){
+      if(/type directly/i.test(el.textContent)){
+        el.textContent = 'Reflections recorded by the programme team this period';
+      }
+    });
+
+    var empties = {
+      'outcomes-empty':   'Outcome indicator data has not been published for this period.',
+      'activities-empty': 'Activity progress has not been published for this period.',
+      'risks-empty':      'No risks have been logged for this period.'
+    };
+    Object.keys(empties).forEach(function(id){
+      var el = document.getElementById(id);
+      if(el){
+        var p = el.querySelector('p');
+        if(p) p.textContent = empties[id];
+      }
+    });
+
+    var blanks = {
+      'learn-1': 'No key learning recorded for this period.',
+      'learn-2': 'No action items recorded for this period.',
+      'learn-3': 'No data quality notes recorded for this period.'
+    };
+    Object.keys(blanks).forEach(function(id){
+      var el = document.getElementById(id);
+      if(el){
+        el.setAttribute('data-placeholder', blanks[id]);
+        if(!el.textContent.trim()) el.textContent = '';
+      }
+    });
+
+    var chip = document.getElementById('period-chip');
+    if(chip) chip.setAttribute('title', 'Current reporting period');
+  }
+  viewerCopy();
+  document.addEventListener('DOMContentLoaded', function(){ lockFields(); viewerCopy(); });
+  setTimeout(function(){ lockFields(); viewerCopy(); }, 300);
+})();
+
+/* ─── AUTO-LOAD data.xlsx FROM THE REPO ───────────────────
+   The spreadsheet committed next to this file is the single
+   source of truth. Replace it and commit to update everyone. */
+(function(){
+  function stamp(txt){
+    var el = document.getElementById('data-stamp');
+    if(el) el.textContent = '\u00b7 ' + txt;
+  }
+  var POLL_MS  = 120000;          /* check every 2 minutes            */
+  var lastTag  = null;            /* ETag / Last-Modified last seen    */
+  var timer    = null;
+
+  function notify(msg){
+    var t = document.getElementById('data-toast');
+    if(!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 4000);
+  }
+
+  function tagOf(r){
+    return r.headers.get('ETag') || r.headers.get('Last-Modified') || null;
+  }
+
+  function load(isFirst){
+    return fetch('data.xlsx?v=' + Date.now(), {cache:'no-store'})
+      .then(function(r){
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        var tag = tagOf(r);
+        var lm  = r.headers.get('Last-Modified');
+        var changed = isFirst || tag === null || tag !== lastTag;
+        lastTag = tag;
+        if(!changed) return null;
+        return r.arrayBuffer().then(function(buf){
+          return {buf: buf, when: lm ? new Date(lm) : null};
+        });
+      })
+      .then(function(res){
+        if(!res) return;                       /* unchanged, nothing to do */
+        if(applyWorkbook(res.buf, true)){
+          stamp(res.when
+            ? 'Data as of ' + res.when.toLocaleDateString('en-GB',
+                {day:'numeric', month:'short', year:'numeric'})
+            : 'Data loaded');
+          if(!isFirst) notify('Dashboard updated with new data');
+        }
+      })
+      .catch(function(err){
+        console.warn('data.xlsx not loaded: ' + err.message);
+        if(isFirst) stamp('No data file found');
+      });
+  }
+
+  function startPolling(){
+    if(timer) return;
+    timer = setInterval(function(){
+      if(!document.hidden) load(false);
+    }, POLL_MS);
+  }
+
+  function boot(){
+    load(true).then(startPolling);
+    /* Catch up immediately when the tab is brought back into focus */
+    document.addEventListener('visibilitychange', function(){
+      if(!document.hidden) load(false);
+    });
+  }
+
+  /* Polling only runs in view mode — in ?edit=1 it would wipe your work */
+  if(document.documentElement.getAttribute('data-mode') !== 'view'){
+    POLL_MS = 0;
+    boot = function(){ load(true); };
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
 </script>
 
 <!-- SAVE TOAST -->
@@ -1657,6 +1887,14 @@ function handleExcelUpload(evt){
   letter-spacing:0.02em;
 }
 #save-toast.show{opacity:1;transform:translateY(0)}
+#data-toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,10px);
+  background:var(--ink);color:#fff;font-family:var(--body);font-size:12.5px;
+  font-weight:500;padding:9px 20px;border-radius:20px;
+  box-shadow:0 4px 18px rgba(0,0,0,0.22);opacity:0;
+  transition:opacity .25s,transform .25s;pointer-events:none;z-index:999;
+  letter-spacing:.01em}
+#data-toast.show{opacity:1;transform:translate(-50%,0)}
+@media print{#data-toast{display:none!important}}
 /* clear-data link in footer */
 .clear-link{
   color:var(--ink4);font-size:11px;cursor:pointer;
@@ -1665,6 +1903,7 @@ function handleExcelUpload(evt){
 }
 .clear-link:hover{color:var(--red2)}
 </style>
+<div id="data-toast"></div>
 <div id="save-toast">✓ Saved</div>
 </body>
 </html>
