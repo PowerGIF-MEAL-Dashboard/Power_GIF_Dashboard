@@ -753,6 +753,8 @@ html[data-mode="view"] .view-welcome{
     </div>
   </div>
 
+  <div id="data-diag"></div>
+
   <!-- ── VIEWER WELCOME (view mode only) ── -->
   <div class="view-welcome">
     <div class="vw-title">Welcome to the <span class="nb">Power-GIF</span> <span class="nb">MEAL Dashboard</span></div>
@@ -1723,9 +1725,11 @@ function applyWorkbook(buffer, isAuto){
         document.getElementById('excel-banner-msg').textContent = msg;
         document.getElementById('excel-banner').classList.add('show');
       }
-      return true;
+      window.__parse = {sheets: wb.SheetNames, counts: counts, total: total};
+      return window.__parse;
 
     }catch(err){
+      window.__parse = {error: err.message};
       if(isAuto){ console.warn('Auto-load failed: ' + err.message); return false; }
       alert('Could not read the Excel file. Error: ' + err.message);
       return false;
@@ -1818,7 +1822,40 @@ function applyWorkbook(buffer, isAuto){
     return r.headers.get('ETag') || r.headers.get('Last-Modified') || null;
   }
 
+  /* Visible diagnostic — replaces the old silent console warning */
+  function diag(head, body){
+    var el = document.getElementById('data-diag');
+    if(!el) return;
+    el.innerHTML = '<div class="dg-h"><i class="ti ti-alert-triangle"></i> ' + head + '</div>' +
+                   '<div class="dg-b">' + body + '</div>';
+    el.style.display = 'block';
+  }
+  function diagClear(){
+    var el = document.getElementById('data-diag');
+    if(el) el.style.display = 'none';
+  }
+
   function load(isFirst){
+    /* Cause 1 — opened straight from disk */
+    if(location.protocol === 'file:'){
+      stamp('Not loaded');
+      diag('Opened from your computer, not from the web',
+        'Browsers block a page on <code>file://</code> from reading other files, so ' +
+        '<code>data.xlsx</code> cannot be fetched. This is expected. Open the dashboard at its ' +
+        'GitHub Pages address instead, or serve the folder locally with ' +
+        '<code>python -m http.server</code>.');
+      return Promise.resolve();
+    }
+    /* Cause 2 — the spreadsheet library never arrived */
+    if(typeof XLSX === 'undefined'){
+      stamp('Not loaded');
+      diag('The spreadsheet library did not load',
+        'The dashboard reads Excel using SheetJS, fetched from cdnjs.cloudflare.com. Your network ' +
+        'appears to have blocked it, so no data can be parsed. Reload once; if it persists, the ' +
+        'library needs to be committed into the repo instead of loaded from a CDN.');
+      return Promise.resolve();
+    }
+
     return fetch('data.xlsx?v=' + Date.now(), {cache:'no-store'})
       .then(function(r){
         if(!r.ok) throw new Error('HTTP ' + r.status);
@@ -1833,17 +1870,44 @@ function applyWorkbook(buffer, isAuto){
       })
       .then(function(res){
         if(!res) return;                       /* unchanged, nothing to do */
-        if(applyWorkbook(res.buf, true)){
-          stamp(res.when
-            ? 'Data as of ' + res.when.toLocaleDateString('en-GB',
-                {day:'numeric', month:'short', year:'numeric'})
-            : 'Data loaded');
-          if(!isFirst) notify('Dashboard updated with new data');
+        var out = applyWorkbook(res.buf, true);
+
+        /* Cause 4 — file read, but nothing usable inside it */
+        if(!out || !out.total){
+          stamp('Loaded, but empty');
+          var found = (out && out.sheets) ? out.sheets.join(', ') : 'none readable';
+          diag('The file loaded, but no rows could be read',
+            'Sheets found in <code>data.xlsx</code>: <strong>' + found + '</strong>.<br>' +
+            'The dashboard reads sheets named exactly <code>KPIs</code>, <code>Outcomes</code>, ' +
+            '<code>Activities</code> and <code>Risks</code>, starting at <strong>row 4</strong>. ' +
+            'If those names look right, check that your data begins on row 4 and not row 2 — ' +
+            'rows 1 to 3 are treated as title and headers.');
+          return;
         }
+
+        diagClear();
+        stamp(res.when
+          ? 'Data as of ' + res.when.toLocaleDateString('en-GB',
+              {day:'numeric', month:'short', year:'numeric'})
+          : 'Data loaded');
+        if(!isFirst) notify('Dashboard updated with new data');
       })
       .catch(function(err){
         console.warn('data.xlsx not loaded: ' + err.message);
-        if(isFirst) stamp('No data file found');
+        if(!isFirst) return;
+        stamp('Not loaded');
+        /* Cause 3 — the file is not where the dashboard expects it */
+        if(/HTTP 404/.test(err.message)){
+          diag('No <code>data.xlsx</code> found next to the dashboard',
+            'The dashboard looked for <code>data.xlsx</code> in its own folder and got a 404. ' +
+            'Check that the file is committed in the <strong>same folder as index.html</strong>, ' +
+            'and that the name is exactly <code>data.xlsx</code> — GitHub Pages is case-sensitive, ' +
+            'so <code>Data.xlsx</code> will not be found. Also confirm Windows has not saved it as ' +
+            '<code>data.xlsx.xlsx</code>.');
+        } else {
+          diag('Could not load the data file', 'The browser reported: <code>' +
+            err.message + '</code>. Open the developer console for more detail.');
+        }
       });
   }
 
@@ -1894,6 +1958,14 @@ function applyWorkbook(buffer, isAuto){
   transition:opacity .25s,transform .25s;pointer-events:none;z-index:999;
   letter-spacing:.01em}
 #data-toast.show{opacity:1;transform:translate(-50%,0)}
+#data-diag{display:none;background:var(--amber-lt);border:1px solid var(--amber2);
+  border-left:3px solid var(--amber2);border-radius:var(--r);
+  padding:1rem 1.2rem;margin:0 0 1.4rem;font-family:var(--body)}
+#data-diag .dg-h{font-size:13.5px;font-weight:600;color:var(--amber);
+  display:flex;align-items:center;gap:7px;margin-bottom:.4rem}
+#data-diag .dg-b{font-size:12.5px;line-height:1.65;color:var(--ink2);max-width:80ch}
+#data-diag code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;
+  background:rgba(0,0,0,0.07);padding:1px 5px;border-radius:4px}
 @media print{#data-toast{display:none!important}}
 /* clear-data link in footer */
 .clear-link{
