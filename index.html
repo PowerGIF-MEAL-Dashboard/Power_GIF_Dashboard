@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Power-GIF MEAL Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
 <style>
 /* ══ TABLER ICONS — subset (18 glyphs) embedded, no CDN needed ══
    Tabler Icons 2.44.0, MIT — https://tabler.io                  */
@@ -694,7 +696,7 @@ html[data-mode="view"] .view-welcome{
     <div class="modal-title">Edit Reporting Period</div>
     <div class="f-row">
       <label>Period Label</label>
-      <input id="period-input" type="text" placeholder="e.g. FY 2026/27 · Q2">
+      <input id="period-input" type="text" placeholder="e.g. FY 2025/26 · Q2">
     </div>
     <div class="m-btns">
       <button class="m-cancel" onclick="closePeriod()">Cancel</button>
@@ -720,7 +722,7 @@ html[data-mode="view"] .view-welcome{
     </div>
     <span class="view-badge"><i class="ti ti-lock"></i> View only</span>
     <span class="period-chip" id="period-chip" onclick="openPeriod()" title="Click to edit period">
-      FY 2026/27 · Q2
+      FY 2025/26 · Q2
     </span>
     <button class="tb-btn btn-excel" onclick="document.getElementById('excel-file-input').click()" title="Load data from Excel file (one-click, remembers data)">
       <i class="ti ti-table-import"></i> Load from Excel
@@ -1520,7 +1522,7 @@ function clearAllData(){
   });
   /* reset period */
   var chip = document.getElementById('period-chip');
-  if(chip) chip.textContent = 'FY 2026/27 · Q2';
+  if(chip) chip.textContent = 'FY 2025/26 · Q2';
   showSaved();
 }
 
@@ -1609,7 +1611,7 @@ function applyWorkbook(buffer, isAuto){
     try{
       var data  = new Uint8Array(buffer);
       var wb    = XLSX.read(data, {type:'array'});
-      var counts = {kpis:0, outcomes:0, activities:0, risks:0};
+      var counts = {kpis:0, outcomes:0, activities:0, risks:0, learning:0};
 
       /* ── KPIs ── */
       if(wb.SheetNames.indexOf('KPIs') > -1){
@@ -1704,6 +1706,21 @@ function applyWorkbook(buffer, isAuto){
         if(newRisk.length){ S.risks = newRisk; counts.risks = newRisk.length; }
       }
 
+      /* ── Learning & Insights ── */
+      if(wb.SheetNames.indexOf('Learning') > -1){
+        var wsL   = wb.Sheets['Learning'];
+        var rowsL = XLSX.utils.sheet_to_json(wsL, {header:1, defval:''});
+        var ids   = ['learn-1','learn-2','learn-3'];
+        for(var n=0; n<3; n++){
+          var row = rowsL[3+n] || [];
+          var txt = String(row[1]||'').trim();
+          var el  = document.getElementById(ids[n]);
+          if(!el) continue;
+          if(txt){ el.textContent = txt; counts.learning++; }
+          else   { el.textContent = ''; }
+        }
+      }
+
       /* Re-render all sections */
       renderKpis();
       renderOutcomes();
@@ -1714,7 +1731,7 @@ function applyWorkbook(buffer, isAuto){
       autoSave();
 
       /* Show success banner */
-      var total = counts.kpis + counts.outcomes + counts.activities + counts.risks;
+      var total = counts.kpis + counts.outcomes + counts.activities + counts.risks + counts.learning;
       var msg = 'Excel loaded: ' +
         counts.kpis + ' KPI' + (counts.kpis !== 1 ? 's' : '') + ', ' +
         counts.outcomes + ' outcome indicator' + (counts.outcomes !== 1 ? 's' : '') + ', ' +
