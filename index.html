@@ -605,43 +605,6 @@ tr:hover .row-acts,
   .excel-banner-close:hover{opacity:1}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
-<style>
-/* ══ VIEW-ONLY MODE ══ */
-html[data-mode="view"] .btn-add,
-html[data-mode="view"] .btn-add-ghost,
-html[data-mode="view"] .kpi-add-card,
-html[data-mode="view"] .clear-link,
-html[data-mode="view"] .btn-excel,
-html[data-mode="view"] .kpi-actions,
-html[data-mode="view"] .row-acts{display:none !important}
-html[data-mode="view"] .empty span[onclick]{pointer-events:none;text-decoration:none;color:inherit;cursor:default}
-html[data-mode="view"] .period-chip{pointer-events:none;cursor:default}
-html[data-mode="view"] [contenteditable]{cursor:default}
-html[data-mode="view"] .view-badge{display:inline-flex}
-.view-welcome{display:none}
-html[data-mode="view"] .view-welcome{
-  display:block;background:var(--card);border:1px solid var(--border);
-  border-left:3px solid var(--accent);border-radius:var(--r);
-  padding:1.15rem 1.35rem;margin:0 0 1.7rem;box-shadow:var(--sh)}
-.vw-title{font-family:var(--display);font-size:15px;font-weight:700;
-  color:var(--ink);margin-bottom:.5rem;letter-spacing:.01em}
-.vw-body{font-family:var(--body);font-size:13px;line-height:1.68;
-  color:var(--ink2);max-width:82ch}
-.vw-meta{display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:.95rem;padding-top:.85rem;
-  border-top:1px solid var(--border);font-family:var(--body);
-  font-size:11.5px;color:var(--ink3)}
-.vw-meta span{display:inline-flex;align-items:center;gap:5px}
-.view-badge{display:none;align-items:center;gap:5px;font-size:11px;font-weight:500;
-  letter-spacing:.02em;padding:4px 10px;border-radius:99px;
-  background:rgba(0,0,0,0.06);color:var(--ink3);white-space:nowrap}
-</style>
-<script>
-(function(){
-  var edit = new URLSearchParams(location.search).get('edit') === '1';
-  document.documentElement.setAttribute('data-mode', edit ? 'edit' : 'view');
-})();
-</script>
 </head>
 <body>
 
@@ -689,7 +652,6 @@ html[data-mode="view"] .view-welcome{
       <button class="th-btn"      onclick="setTheme('grey',this)"  title="Grey">◑</button>
       <button class="th-btn"      onclick="setTheme('dark',this)"  title="Dark">🌙</button>
     </div>
-    <span class="view-badge"><i class="ti ti-lock"></i> View only</span>
     <span class="period-chip" id="period-chip" onclick="openPeriod()" title="Click to edit period">
       FY 2025/26 · Q2
     </span>
@@ -721,22 +683,6 @@ html[data-mode="view"] .view-welcome{
         <div class="pg-title">Monitoring, Evaluation,<br>Accountability &amp; Learning</div>
         <div class="pg-sub">Powering Nepal's Green Industrial Future · Birgunj-Simara Corridor · Nepal</div>
       </div>
-    </div>
-  </div>
-
-  <!-- ── VIEWER WELCOME (view mode only) ── -->
-  <div class="view-welcome">
-    <div class="vw-title">Welcome to the Power-GIF MEAL Dashboard</div>
-    <div class="vw-body">
-      This dashboard reports current progress for <strong>Powering Nepal&rsquo;s Green Industrial
-      Future</strong>, the CRT/N-led consortium programme in the Birgunj&ndash;Simara Industrial
-      Corridor. It brings together key performance indicators, outcome-level tracking, activity
-      progress, and the risk and accountability register for the reporting period shown above.
-    </div>
-    <div class="vw-meta">
-      <span><i class="ti ti-eye"></i> Read-only view</span>
-      <span><i class="ti ti-refresh"></i> Refreshed each reporting period</span>
-      <span><i class="ti ti-printer"></i> Use Print / Export to save a PDF copy</span>
     </div>
   </div>
 
@@ -935,7 +881,7 @@ html[data-mode="view"] .view-welcome{
 
   <!-- Footer -->
   <div style="text-align:center;font-size:11px;color:var(--ink4);padding:1.5rem 0 0.5rem;border-top:1px solid var(--border);margin-top:0.5rem">
-    POWER-GIF · Powering Nepal's Green Industrial Future · MEAL Dashboard · CRT/N <span id="data-stamp"></span> <span class="clear-link" onclick="clearAllData()" title="Wipe all saved data and start fresh">Reset dashboard</span>
+    POWER-GIF · Powering Nepal's Green Industrial Future · MEAL Dashboard · Data auto-saved in this browser <span class="clear-link" onclick="clearAllData()" title="Wipe all saved data and start fresh">Reset dashboard</span>
   </div>
 
 </main>
@@ -1569,15 +1515,9 @@ function handleExcelUpload(evt){
   evt.target.value = '';
 
   var reader = new FileReader();
-  reader.onload = function(e){ applyWorkbook(e.target.result, false); };
-  reader.readAsArrayBuffer(file);
-}
-
-/* Shared parser: used by the manual upload AND by the automatic
-   fetch of data.xlsx from the repo. */
-function applyWorkbook(buffer, isAuto){
+  reader.onload = function(e){
     try{
-      var data  = new Uint8Array(buffer);
+      var data  = new Uint8Array(e.target.result);
       var wb    = XLSX.read(data, {type:'array'});
       var counts = {kpis:0, outcomes:0, activities:0, risks:0};
 
@@ -1691,113 +1631,16 @@ function applyWorkbook(buffer, isAuto){
         counts.activities + ' activit' + (counts.activities !== 1 ? 'ies' : 'y') + ', ' +
         counts.risks + ' risk' + (counts.risks !== 1 ? 's' : '') +
         ' — data saved automatically.';
-      if(!isAuto){
-        document.getElementById('excel-banner-msg').textContent = msg;
-        document.getElementById('excel-banner').classList.add('show');
-      }
-      return true;
+      document.getElementById('excel-banner-msg').textContent = msg;
+      document.getElementById('excel-banner').classList.add('show');
 
     }catch(err){
-      if(isAuto){ console.warn('Auto-load failed: ' + err.message); return false; }
-      alert('Could not read the Excel file. Error: ' + err.message);
-      return false;
+      alert('Could not read Excel file. Please make sure it is the PowerGIF_Data.xlsx template.\nError: ' + err.message);
     }
+  };
+  reader.readAsArrayBuffer(file);
 }
 
-
-/* ─── VIEW-ONLY GUARD ─────────────────────────────────────
-   Editing is enabled only when the URL ends with ?edit=1    */
-(function(){
-  if(document.documentElement.getAttribute('data-mode') !== 'view') return;
-  ['openKpi','openOutcome','openActivity','openRisk','openPeriod',
-   'clearAllData','deleteKpi','deleteOutcome','deleteActivity','deleteRisk']
-  .forEach(function(fn){
-    if(typeof window[fn] === 'function'){ window[fn] = function(){ return false; }; }
-  });
-  function lockFields(){
-    document.querySelectorAll('[contenteditable]').forEach(function(el){
-      el.setAttribute('contenteditable','false');
-    });
-  }
-  lockFields();
-
-  /* ── Viewer-facing copy (replaces editor instructions) ── */
-  function viewerCopy(){
-    var hint = document.querySelector('.sec-hint');
-    if(hint) hint.textContent = 'Headline indicators for the current reporting period';
-
-    document.querySelectorAll('.sec-hsub').forEach(function(el){
-      if(/type directly/i.test(el.textContent)){
-        el.textContent = 'Reflections recorded by the programme team this period';
-      }
-    });
-
-    var empties = {
-      'outcomes-empty':   'Outcome indicator data has not been published for this period.',
-      'activities-empty': 'Activity progress has not been published for this period.',
-      'risks-empty':      'No risks have been logged for this period.'
-    };
-    Object.keys(empties).forEach(function(id){
-      var el = document.getElementById(id);
-      if(el){
-        var p = el.querySelector('p');
-        if(p) p.textContent = empties[id];
-      }
-    });
-
-    var blanks = {
-      'learn-1': 'No key learning recorded for this period.',
-      'learn-2': 'No action items recorded for this period.',
-      'learn-3': 'No data quality notes recorded for this period.'
-    };
-    Object.keys(blanks).forEach(function(id){
-      var el = document.getElementById(id);
-      if(el){
-        el.setAttribute('data-placeholder', blanks[id]);
-        if(!el.textContent.trim()) el.textContent = '';
-      }
-    });
-
-    var chip = document.getElementById('period-chip');
-    if(chip) chip.setAttribute('title', 'Current reporting period');
-  }
-  viewerCopy();
-  document.addEventListener('DOMContentLoaded', function(){ lockFields(); viewerCopy(); });
-  setTimeout(function(){ lockFields(); viewerCopy(); }, 300);
-})();
-
-/* ─── AUTO-LOAD data.xlsx FROM THE REPO ───────────────────
-   The spreadsheet committed next to this file is the single
-   source of truth. Replace it and commit to update everyone. */
-(function(){
-  function stamp(txt){
-    var el = document.getElementById('data-stamp');
-    if(el) el.textContent = '\u00b7 ' + txt;
-  }
-  function boot(){
-    fetch('data.xlsx?v=' + Date.now(), {cache:'no-store'})
-      .then(function(r){
-        if(!r.ok) throw new Error('HTTP ' + r.status);
-        var lm = r.headers.get('Last-Modified');
-        boot._when = lm ? new Date(lm) : null;
-        return r.arrayBuffer();
-      })
-      .then(function(buf){
-        if(applyWorkbook(buf, true)){
-          stamp(boot._when
-            ? 'Data as of ' + boot._when.toLocaleDateString('en-GB',
-                {day:'numeric', month:'short', year:'numeric'})
-            : 'Data loaded');
-        }
-      })
-      .catch(function(err){
-        console.warn('data.xlsx not loaded: ' + err.message);
-        stamp('No data file found');
-      });
-  }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
-})();
 </script>
 
 <!-- SAVE TOAST -->
